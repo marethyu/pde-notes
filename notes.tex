@@ -1,0 +1,326 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[left=2cm, right=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{csquotes}
+\usepackage{enumerate}
+
+\newcommand{\doctitle}{Worked-Out PDEs}
+\newcommand{\name}{Jimmy Yang}
+
+% disable indentation
+\setlength\parindent{0pt}
+
+\begin{document}
+
+\begin{flushright}
+\name
+\end{flushright}
+
+\begin{center}
+\Large
+\bfseries
+\doctitle
+\end{center}
+
+\section{Electric potential inside long rectangular tube}
+
+Problem statement:
+
+\begin{displayquote}
+Within a very long (extends in the z-direction), rectangular, hollow pipe, there are no electric charges. It has width $a$ and height $b$. The walls of this pipe are kept at a known voltage. The walls at $x=0,a$ are kept at constant potential $V_1$. Meanwhile, the walls at $y=\pm b/2$ are kept at constant potential $V_2$. Find potential inside the pipe.
+\end{displayquote}
+
+Solution: \\
+
+We need to solve the 2D Laplacian $\nabla^2 V (x, y)=0$ with the following boundary conditions:
+
+\begin{enumerate}[i]
+  \item $V(0,y)=V(a,y)=V_1$
+  \item $V(x,b/2)=V(x,-b/2)=V_2$
+\end{enumerate}
+
+One way to solve this is to break into the following two subproblems:
+
+\begin{enumerate}
+  \item Solve $\nabla^2 V=0$ with boundary conditions: $V(0,y)=V(a,y)=V_1$ and $V(x,b/2)=V(x,-b/2)=0$.
+  \item Solve $\nabla^2 V=0$ with boundary conditions: $V(0,y)=V(a,y)=0$ and $V(x,b/2)=V(x,-b/2)=V_2$.
+\end{enumerate}
+
+But we can be more clever by changing things a bit:
+
+\begin{enumerate}
+  \item Solve $\nabla^2 V=0$ with boundary conditions: $V(0,y)=V(a,y)=V_1-V_2$ and $V(x,b/2)=V(x,-b/2)=0$.
+  \item Solve $\nabla^2 V=0$ with boundary conditions: $V(0,y)=V(a,y)=V_2$ and $V(x,b/2)=V(x,-b/2)=V_2$.
+\end{enumerate}
+
+\subsection*{Subproblem 1}
+
+By separating variables using $V(x,y)=f(x)g(y)$:
+
+\begin{gather}
+\nabla^2 V=\frac{\partial^2 V}{\partial x^2}+\frac{\partial^2 V}{\partial y^2}=0 \\
+f''(x)g(y)+f(x)g''(y)=0 \\
+\frac{f''(x)}{f(x)}+\frac{g''(y)}{g(y)}=0
+C_1+C_2=0
+\end{gather}
+
+The assignment of constants will depend on boundary conditions. One of them will be positive and another will be negative. In order to satisfy the symmetric boundary condition $V(0,y)=V(a,y)=V_1-V_2$, we will use hyperbolics for x-equation ($C_1=k^2$). On the other hand, we will use sinusoidals for y-equation ($C_1=-k^2$) to satisfy the vanishing boundary conditions $V(x,b/2)=V(x,-b/2)=0$. The respective eigenvalue problems are:
+
+\begin{gather}
+f''(x)=k^2 f(x) \\
+g''(y)=-k^2g(y)
+\end{gather}
+
+As usual, the general solutions to these ODEs are:
+
+\begin{gather}
+f(x)=A\cosh(kx)+B\sinh(kx) \\
+g(y)=C\cos(ky)+D\sin(ky)
+\end{gather}
+
+\noindent
+The boundary conditions demand that we need to shift coordinates:
+
+\begin{gather}
+f(x)=A\cosh\left(k\left(x-\frac{a}{2}\right)\right) \\
+g(y)=C\cos\left(k\left(y+\frac{b}{2}\right)\right)+D\sin\left(k\left(y+\frac{b}{2}\right)\right)
+\end{gather}
+
+Note that in $f(x)$, the constant $B$ is set to zero since $\sinh$ is an odd function which is not suitable for even symmetry. \\
+
+The boundary conditions for y-equation are $g(b/2)=g(-b/2)=0$:
+
+\begin{gather}
+g\left(-\frac{b}{2}\right)=C\cos(0)+D\sin(0)=C=0 \\
+g\left(\frac{b}{2}\right)=D\sin\left(kb\right)=0 \\
+kb=n\pi \\
+k=\frac{n\pi}{b}
+\end{gather}
+
+For $n=1,2,3,\dots$. The solutions to ODEs are:
+
+\begin{gather}
+f_n(x)=A_n\cosh\left(\frac{n\pi}{b}\left(x-\frac{a}{2}\right)\right) \\
+g_n(y)=D_n\sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right)
+\end{gather}
+
+The general solution is just a linear combination of $f_n (x) g_n (y)$:
+
+\begin{gather}
+V(x,y)=\sum_{n=1}^\infty f_n (x) g_n (y) = \sum_{n=1}^\infty C_n \cosh\left(\frac{n\pi}{b}\left(x-\frac{a}{2}\right)\right) \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right)
+\end{gather}
+
+We define the following inner product:
+
+\begin{gather}
+\langle f(y), g(y) \rangle = \int_{-\frac{b}{2}}^{\frac{b}{2}} f(y) g(y) dy
+\end{gather}
+
+Applying the last boundary condition $V(0,y)=V(a,y)=V_1-V_2$ and inner product:
+
+\begin{gather}
+V(0,y) = V(a,y) = \sum_{n=1}^\infty C_n \cosh\left(\frac{n\pi a}{2b}\right) \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right)=V_1-V_2 \\
+\left\langle \sin\left(\frac{m\pi}{b}\left(y+\frac{b}{2}\right)\right), \sum_{n=1}^\infty C_n \cosh\left(\frac{n\pi a}{2b}\right) \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right) \right\rangle = \left\langle \sin\left(\frac{m\pi}{b}\left(y+\frac{b}{2}\right)\right), V_1-V_2 \right\rangle \\
+\sum_{n=1}^\infty C_n \cosh\left(\frac{n\pi a}{2b}\right) \left\langle \sin\left(\frac{m\pi}{b}\left(y+\frac{b}{2}\right)\right), \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right) \right\rangle = \left\langle \sin\left(\frac{m\pi}{b}\left(y+\frac{b}{2}\right)\right), V_1-V_2 \right\rangle
+\end{gather}
+
+But notice that:
+
+\begin{gather}
+\int_{-\frac{b}{2}}^{\frac{b}{2}} \sin\left(\frac{m\pi}{b}\left(y+\frac{b}{2}\right)\right) \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right) dy = \begin{cases} 0 & m \ne n \\ \frac{b}{2} & m=n \end{cases}
+\end{gather}
+
+Applying orthogonality gives:
+
+\begin{gather}
+C_n \cosh\left(\frac{n\pi a}{2b}\right) \left\langle \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right), \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right) \right\rangle = \left\langle \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right), V_1-V_2 \right\rangle \\
+C_n \cosh\left(\frac{n\pi a}{2b}\right) = \frac{2}{b} (V_1-V_2) \left\langle \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right), 1 \right\rangle \\
+C_n \cosh\left(\frac{n\pi a}{2b}\right) = \begin{cases} \frac{4}{n\pi} (V_1-V_2) & \text{odd n} \\ 0 & \text{even n} \end{cases}
+\end{gather}
+
+Now the solution for subproblem 1 is:
+
+\begin{gather}
+V_{\text{s1}}(x,y) = \sum_{n=1,\text{odd}}^\infty \frac{4}{n\pi} (V_1-V_2) \frac{\cosh\left(\frac{n\pi}{b}\left(x-\frac{a}{2}\right)\right)}{\cosh\left(\frac{n\pi a}{2b}\right)} \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right)
+\end{gather}
+
+\subsection*{Subproblem 2}
+
+This one is easy. It is a constant:
+
+\begin{gather}
+V_{\text{s2}}(x,y) = V_2
+\end{gather}
+
+\subsection*{Solution}
+
+The final solution is just $V=V_{\text{s1}}+V_{\text{s2}}$:
+
+\begin{gather}
+V(x,y) = V_2 + \sum_{n=1,\text{odd}}^\infty \frac{4}{n\pi} (V_1-V_2) \frac{\cosh\left(\frac{n\pi}{b}\left(x-\frac{a}{2}\right)\right)}{\cosh\left(\frac{n\pi a}{2b}\right)} \sin\left(\frac{n\pi}{b}\left(y+\frac{b}{2}\right)\right)
+\end{gather}
+
+\section{Electric potential inside and outside charged sphere}
+
+Problem statement:
+
+\begin{displayquote}
+A hollow sphere of radius $R$ has a surface charge density $\sigma = \sigma_0\sin^2\theta$, where $\sigma_0$ is a constant. Find potential inside and outside the sphere.
+\end{displayquote}
+
+Solution: \\
+
+We need to solve the Laplacian $\nabla^2 V(r, \theta)=0$ with the following boundary conditions:
+
+\begin{enumerate}[i]
+  \item $V_{in}(r=0)=\text{finite}$
+  \item $V_{out}(r \rightarrow \infty) = 0$
+  \item $V_{in} (r=R) = V_{out} (r=R)$
+  \item $\displaystyle \frac{\partial V_{out}}{\partial r}\Bigr|_{\substack{r=R}}-\frac{\partial V_{in}}{\partial r}\Bigr|_{\substack{r=R}}=-\frac{\sigma_0\sin^2\theta}{\epsilon_0}$
+\end{enumerate}
+
+The general solution for spherical Laplacian, assuming azimuthal symmetry, is:
+
+\begin{gather}
+V (r, \theta) = \sum_{l=0}^\infty \left( A_l r^l + \frac{B_l}{r^{l+1}} \right) P_l (\cos\theta)
+\end{gather}
+
+where $P_l$ are Legendre polynomials of order $l$. \\
+
+From boundary conditions i and ii, $V_{in}$ and $V_{out}$ will be:
+
+\begin{gather}
+V_{in} (r, \theta) = \sum_{l=0}^\infty A_l r^l P_l (\cos\theta) \\
+V_{out} (r, \theta) = \sum_{l=0}^\infty \frac{B_l}{r^{l+1}} P_l (\cos\theta)
+\end{gather}
+
+Boundary condition iii gives:
+
+\begin{gather}
+\sum_{l=0}^\infty A_l R^l P_l (\cos\theta) = \sum_{l=0}^\infty \frac{B_l}{R^{l+1}} P_l (\cos\theta)
+\end{gather}
+
+Boundary condition iv gives:
+
+\begin{gather}
+\sum_{l=0}^\infty -(l+1)\frac{B_l}{R^{l+2}} P_l (\cos\theta) - \sum_{l=0}^\infty l A_l R^{l-1} P_l (\cos\theta) = -\frac{\sigma_0}{\epsilon_0} \sin^2\theta \\
+\sum_{l=0}^\infty \left( -(l+1)\frac{B_l}{R^{l+2}} - l A_l R^{l-1} \right) P_l (\cos\theta) = -\frac{\sigma_0}{\epsilon_0} (1-\cos^2\theta) = -\frac{\sigma_0}{\epsilon_0} \left(\frac{2}{3}-\frac{2}{3}P_2(\cos\theta)\right)
+\end{gather}
+
+It seems like only polynomials of degrees $l=0,2$ matter, so from equations 31 and 32:
+
+\begin{gather}
+A_0 + A_2 R^2 P_2 (\cos\theta) = \frac{B_0}{R} + \frac{B_2}{R^3} P_2 (\cos\theta) \\
+-\frac{B_0}{R^{2}} + \left( -3\frac{B_2}{R^{4}} - 2 A_2 R \right) P_2 (\cos\theta) = -\frac{2}{3} \frac{\sigma_0}{\epsilon_0} + \frac{2}{3} \frac{\sigma_0}{\epsilon_0} P_2(\cos\theta)
+\end{gather}
+
+Matching coefficients gives the following system to solve for constants $A_0, A_2, B_0, B_2$:
+
+\begin{gather}
+A_0 = \frac{B_0}{R} \\
+A_2 R^2 = \frac{B_2}{R^3} \\
+\frac{B_0}{R^{2}} = \frac{2}{3} \frac{\sigma_0}{\epsilon_0} \\
+-3\frac{B_2}{R^{4}} - 2 A_2 R = \frac{2}{3} \frac{\sigma_0}{\epsilon_0}
+\end{gather}
+
+After a painful bit of algebra, the constants are:
+
+\begin{gather}
+A_0 = \frac{2}{3}\frac{\sigma_0}{\epsilon_0} R \\
+A_2 = -\frac{2}{15} \frac{\sigma_0}{\epsilon_0} \frac{1}{R} \\
+B_0 = \frac{2}{3}\frac{\sigma_0}{\epsilon_0} R^2 \\
+B_2 = -\frac{2}{15} \frac{\sigma_0}{\epsilon_0} R^4
+\end{gather}
+
+The final solution is:
+
+\begin{gather}
+V_{in} (r, \theta) = \frac{2}{3}\frac{\sigma_0}{\epsilon_0} R - \frac{2}{15} \frac{\sigma_0}{\epsilon_0} \frac{r^2}{R} P_2 (\cos\theta) \\
+V_{out} (r, \theta) = \frac{2}{3}\frac{\sigma_0}{\epsilon_0} \frac{R^2}{r} - \frac{2}{15} \frac{\sigma_0}{\epsilon_0} \frac{R^4}{r^3} P_2 (\cos\theta)
+\end{gather}
+
+\section{Electric potential for long cylinder}
+
+Problem statement:
+
+\begin{displayquote}
+Two half-cylinders of radius $R$ made out of conducting material are separated by a thin air gap. The left half cylinder ($\pi/2 < \phi < 3\pi/2$) is held at potential $-V_0$ and the right half-cylinder ($0 < \phi < \pi/2$ or $3\pi/2 < \phi < 2\pi$) at potential $+V_0$. Find potential inside and outside the cylinder.
+\end{displayquote}
+
+Solution: \\
+
+We need to solve the Laplacian $\nabla^2 V(s, \phi)=0$ for a cylinder with the following boundary conditions:
+
+\begin{enumerate}[i]
+  \item $V_{in}(s=0)=\text{finite}$
+  \item $V_{out}(s \rightarrow \infty) = 0$
+  \item $V_{in} (s=R) = V_{out} (s=R)$
+  \item $V(s=R)=\begin{cases} V_0 & 0 < \phi < \pi/2 \\ -V_0 & \pi/2 < \phi < 3\pi/2 \\ V_0 & 3\pi/2 < \phi < 2\pi \end{cases}$
+\end{enumerate}
+
+The general solution for the cylindrical Laplacian is:
+
+\begin{gather}
+V (s, \phi) = A + B \ln s + \sum_{n=1}^\infty \left( A_n s^n + B_n s^{-n} \right) \left( C_n \cos (n\phi) + D_n \sin (n\phi) \right)
+\end{gather}
+
+To satisfy boundary conditions i and ii, $V_{in}$ and $V_{out}$ will be:
+
+\begin{gather}
+V_{in} (s, \phi) = \sum_{n=1}^\infty A_n s^n \cos (n\phi) \\
+V_{out} (s, \phi) = \sum_{n=1}^\infty B_n s^{-n} \cos (n\phi)
+\end{gather}
+
+Note that only $\cos$ terms are used because boundary condition iv demands that $V$ be negative when $\pi/2 < \phi < 3\pi/2$ which is satisfied by $\cos$ function. \\
+
+We define the following inner product:
+
+\begin{gather}
+\langle f(\phi), g(\phi) \rangle = \int_0^{2\pi} f(\phi) g(\phi) d\phi
+\end{gather}
+
+Boundary condition iv will be used to find constants $A_n$ and $B_n$. We will start with $V_{in}$:
+
+\begin{gather}
+V_{in} (R, \phi) = \sum_{n=1}^\infty A_n R^n \cos (n\phi) = \begin{cases} V_0 & 0 < \phi < \pi/2 \\ -V_0 & \pi/2 < \phi < 3\pi/2 \\ V_0 & 3\pi/2 < \phi < 2\pi \end{cases}
+\end{gather}
+
+Applying the inner product to both sides gives:
+
+\begin{gather}
+\left\langle \cos(m\phi), \sum_{n=1}^\infty A_n R^n \cos (n\phi) \right\rangle = \left\langle \cos(m\phi), \begin{cases} V_0 & 0 < \phi < \pi/2 \\ -V_0 & \pi/2 < \phi < 3\pi/2 \\ V_0 & 3\pi/2 < \phi < 2\pi \end{cases} \right\rangle \\
+\sum_{n=1}^\infty A_n R^n \left\langle \cos(n\phi), \cos (m\phi) \right\rangle = \left\langle \cos(m\phi), \begin{cases} V_0 & 0 < \phi < \pi/2 \\ -V_0 & \pi/2 < \phi < 3\pi/2 \\ V_0 & 3\pi/2 < \phi < 2\pi \end{cases} \right\rangle
+\end{gather}
+
+However notice that:
+
+\begin{gather}
+\left\langle \cos(n\phi), \cos (m\phi) \right\rangle = \int_0^{2\pi}\cos(n\phi) \cos (m\phi) d\phi = \begin{cases} 0 & m \ne n \\ \pi & m=n \end{cases}
+\end{gather}
+
+Applying the orthogonality of $\cos(n\phi)$ to equation 7:
+
+\begin{gather}
+A_n R^n \left\langle \cos(n\phi), \cos (n\phi) \right\rangle = \left\langle \cos(n\phi), \begin{cases} V_0 & 0 < \phi < \pi/2 \\ -V_0 & \pi/2 < \phi < 3\pi/2 \\ V_0 & 3\pi/2 < \phi < 2\pi \end{cases} \right\rangle \\
+A_n R^n \pi = \int_0^{\frac{\pi}{2}} V_0 \cos(n\phi) d\phi - \int_{\frac{\pi}{2}}^{\frac{3\pi}{2}} V_0 \cos(n\phi) d\phi + \int_{\frac{3\pi}{2}}^{2\pi} V_0 \cos(n\phi) d\phi \\
+A_n R^n = \frac{V_0}{\pi} \left[ \int_0^{\frac{\pi}{2}} \cos(n\phi) d\phi - \int_{\frac{\pi}{2}}^{\frac{3\pi}{2}} \cos(n\phi) d\phi + \int_{\frac{3\pi}{2}}^{2\pi} \cos(n\phi) d\phi \right] \\
+A_n R^n = \frac{2V_0}{n\pi} \left[ \sin\left( \frac{n\pi}{2} \right) - \sin\left( \frac{3n\pi}{2} \right) \right] \\
+A_n R^n = \begin{cases} \frac{4V_0}{n\pi} (-1)^{\frac{n-1}{2}} & \text{odd n} \\ 0 & \text{even n} \end{cases}
+\end{gather}
+
+Calculating constant $B_n$ is similar:
+
+\begin{gather}
+B_n R^{-n} = \begin{cases} \frac{4V_0}{n\pi} (-1)^{\frac{n-1}{2}} & \text{odd n} \\ 0 & \text{even n} \end{cases}
+\end{gather}
+
+The final solutions are now therefore:
+
+\begin{gather}
+V_{in} (s, \phi) = \sum_{n=1,\text{odd}}^\infty \frac{4V_0}{n\pi} (-1)^{\frac{n-1}{2}} \left(\frac{s}{R}\right)^n \cos (n\phi) \\
+V_{out} (s, \phi) = \sum_{n=1,\text{odd}}^\infty \frac{4V_0}{n\pi} (-1)^{\frac{n-1}{2}} \left(\frac{R}{s}\right)^n \cos (n\phi)
+\end{gather}
+
+\end{document}
